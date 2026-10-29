@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>公平な税制をつくれ！ v3</title>
+<style>
+:root{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif;color:#172033;background:#f4f6fa}
+*{box-sizing:border-box}body{margin:0}header{background:white;border-bottom:1px solid #dce2eb;padding:17px 20px;position:sticky;top:0;z-index:5}
+h1{font-size:23px;margin:0 0 4px}h2{font-size:19px;margin:0 0 14px}.sub,.small{color:#647084}.sub{font-size:14px}.small{font-size:12px;line-height:1.55}
+main{max-width:1200px;margin:auto;padding:16px;display:grid;gap:14px}.card{background:white;border:1px solid #dce2eb;border-radius:15px;padding:17px;box-shadow:0 2px 7px rgba(20,30,50,.035)}
+.mission{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.target{font-size:26px;font-weight:800}.status{padding:9px 12px;border-radius:999px;font-weight:800;background:#fff0ed;color:#a33427}.ok{background:#e8f7ed;color:#176a38}
+.people{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.person{border:1px solid #e0e5ed;border-radius:12px;padding:12px}.person h3{margin:0 0 7px}.same{background:#fff9e7}
+.controls{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.control{border:1px solid #e0e5ed;border-radius:12px;padding:13px}label{font-weight:750;display:flex;justify-content:space-between;gap:8px}.value{font-size:19px}input[type=range]{width:100%;margin:13px 0 8px}
+.summary{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.metric{background:#f5f7fa;border-radius:11px;padding:11px}.metric b{display:block;font-size:19px;margin-top:4px}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:9px;border-bottom:1px solid #e7eaf0;text-align:right;white-space:nowrap}th:first-child,td:first-child{text-align:left}.negative{font-weight:800;color:#a33427}.positive{font-weight:800}
+.callout{background:#f4f7fc;border-left:4px solid #77839a;padding:11px 13px;border-radius:8px;font-size:14px;line-height:1.55}.warn{font-size:12px;background:#fff8df;color:#70500a;padding:10px;border-radius:9px}
+.question{font-weight:750;margin:18px 0 7px}textarea{width:100%;min-height:72px;border:1px solid #ccd4df;border-radius:9px;padding:9px;font:inherit}
+button{border:0;border-radius:9px;padding:10px 14px;font-weight:750;cursor:pointer}.primary{background:#172033;color:white}.secondary{background:#edf0f5;color:#172033}
+@media(max-width:850px){.people,.controls{grid-template-columns:1fr 1fr}.summary{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.people,.controls{grid-template-columns:1fr}}
+@media print{header{position:static}input,button,textarea{display:none}.card{break-inside:avoid;box-shadow:none}}
+</style>
+</head>
+<body>
+<header><h1>公平な税制をつくれ！</h1><div class="sub">「所得・消費・土地や建物」のどこに、どれくらい課税する？</div></header>
+<main>
+<section class="card">
+<div class="mission"><div><div class="small">MISSION</div><div class="target">公共サービスに必要なお金：<span id="targetText">350</span>万円</div></div><div id="status" class="status"></div></div>
+<p>今の税率では財源が不足しています。必要なお金を確保しながら、6人の違いを見て「公平だ」と説明できる税制をつくってください。</p>
+<div class="callout"><b>大切：</b>このアプリは「公平度」を判定しません。数字を見て、何を公平と考えたのかを班で説明してください。</div>
+</section>
+
+<section class="card"><h2>この社会に暮らす6人</h2><div class="people" id="people"></div>
+<p class="small">※このシミュレーションの「年収」は、すべてその人本人の所得として扱います。BさんとFさんは本人の年収と土地・建物の評価額が同じですが、家族構成と消費額が違います。</p></section>
+
+<section class="card">
+<h2>① 所得への課税 ― 超過累進方式</h2>
+<p class="small">高い税率は、境目を超えた所得の部分だけにかかります。3つを同じ税率にすれば比例的な課税にもできます。</p>
+<div class="controls">
+<div class="control"><label>400万円までの部分 <span class="value"><span id="lowV">3</span>%</span></label><input id="low" type="range" min="0" max="20" value="3"></div>
+<div class="control"><label>400万円超〜800万円の部分 <span class="value"><span id="midV">6</span>%</span></label><input id="mid" type="range" min="0" max="30" value="6"></div>
+<div class="control"><label>800万円を超える部分 <span class="value"><span id="highV">12</span>%</span></label><input id="high" type="range" min="0" max="45" value="12"></div>
+</div></section>
+
+<section class="card"><h2>② 消費への課税</h2>
+<div class="control"><label>年間消費額への税率 <span class="value"><span id="consumptionV">3</span>%</span></label><input id="consumption" type="range" min="0" max="20" value="3"><div class="small">このモデルでは、表示された「年間消費額」を税抜きの消費額として計算します。</div></div></section>
+
+<section class="card"><h2>③ 土地・建物への課税</h2>
+<div class="control"><label>土地・建物の評価額への税率 <span class="value"><span id="propertyV">0.2</span>%</span></label><input id="property" type="range" min="0" max="3" step=".1" value=".2"><div class="small">固定資産への課税を考えるための学習用モデルです。預金・株式・相続財産などへの課税はここでは扱いません。</div></div></section>
+
+<section class="card"><h2>税制の結果</h2>
+<div class="summary">
+<div class="metric">税収合計<b id="total"></b></div><div class="metric">必要額との差<b id="gap"></b></div>
+<div class="metric">所得から<b id="incomeShare"></b></div><div class="metric">消費から<b id="consShare"></b></div><div class="metric">土地・建物から<b id="propShare"></b></div>
+</div>
+<div style="overflow:auto;margin-top:13px"><table><thead><tr><th>住民</th><th>所得への税</th><th>消費への税</th><th>土地・建物への税</th><th>税合計</th><th>年収に対する負担率</th><th>税引後所得</th><th>税・消費後に残る額</th></tr></thead><tbody id="results"></tbody></table></div>
+<p class="warn">※学習のために大幅に単純化した架空の税制です。実際の日本では所得控除、税額控除、非課税制度、軽減税率、固定資産の評価方法など、さまざまな仕組みがあります。</p>
+</section>
+
+<section class="card"><h2>数字から考える</h2>
+<p class="question">① どの税を上げましたか。なぜその税を選びましたか？</p><textarea></textarea>
+<p class="question">② A〜Fのうち、負担が重いと感じる人はいますか。何を根拠にそう考えましたか？</p><textarea></textarea>
+<p class="question">③ BさんとFさんは年収が同じです。同じように課税されることは「公平」でしょうか？</p><textarea></textarea>
+<p class="question">④ Eさんは所得が低めですが、高額な土地・建物を所有しています。所得と資産のどちらを重視すべきでしょうか？</p><textarea></textarea>
+<p class="question">⑤ より公平にしようとすると、今の3種類の税だけでは足りない仕組みはありますか？</p><textarea placeholder="家族構成、生活に必要なお金、控除などにも注目してみよう。"></textarea>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px"><button class="primary" onclick="window.print()">印刷 / PDF保存</button><button class="secondary" onclick="resetAll()">初期状態に戻す</button></div>
+</section>
+</main>
+<script>
+const people=[
+{name:"A",income:200,spend:160,property:0,info:"単身。収入の多くを生活費に使う。"},
+{name:"B",income:400,spend:280,property:200,info:"子ども2人を育てている。",same:true},
+{name:"C",income:700,spend:430,property:800,info:"単身。本人の年収は700万円。"},
+{name:"D",income:1200,spend:580,property:3000,info:"高所得で、土地・建物も所有。"},
+{name:"E",income:300,spend:220,property:5000,info:"所得は低めだが、高額な土地・建物を所有。"},
+{name:"F",income:400,spend:220,property:200,info:"単身。Bさんと年収・土地建物評価額は同じ。",same:true}
+];
+const $=x=>document.getElementById(x);
+$("people").innerHTML=people.map(p=>`<div class="person ${p.same?'same':''}"><h3>${p.name}さん</h3><div>年収 <b>${p.income}万円</b></div><div>年間消費 ${p.spend}万円</div><div>土地・建物 ${p.property}万円</div><div class="small">${p.info}</div></div>`).join("");
+["low","mid","high","consumption","property"].forEach(id=>$(id).addEventListener("input",calc));
+
+function incomeTax(x){
+ const r1=+$("low").value/100,r2=+$("mid").value/100,r3=+$("high").value/100;
+ return Math.min(x,400)*r1 + Math.min(Math.max(x-400,0),400)*r2 + Math.max(x-800,0)*r3;
+}
+function calc(){
+ ["low","mid","high","consumption","property"].forEach(id=>$(id+"V").textContent=$(id).value);
+ let ti=0,tc=0,tp=0,rows="";
+ for(const p of people){
+   const it=incomeTax(p.income), ct=p.spend*(+$("consumption").value)/100, pt=p.property*(+$("property").value)/100;
+   const tax=it+ct+pt, burden=tax/p.income*100, afterTax=p.income-it-pt, afterAll=afterTax-p.spend-ct;
+   ti+=it;tc+=ct;tp+=pt;
+   rows+=`<tr><td><b>${p.name}</b></td><td>${it.toFixed(1)}</td><td>${ct.toFixed(1)}</td><td>${pt.toFixed(1)}</td><td><b>${tax.toFixed(1)}万円</b></td><td>${burden.toFixed(1)}%</td><td>${afterTax.toFixed(1)}万円</td><td class="${afterAll<0?'negative':'positive'}">${afterAll.toFixed(1)}万円</td></tr>`;
+ }
+ const total=ti+tc+tp,target=350,gap=total-target;
+ $("results").innerHTML=rows;$("total").textContent=total.toFixed(1)+"万円";$("gap").textContent=(gap>=0?"+":"")+gap.toFixed(1)+"万円";
+ $("incomeShare").textContent=total?(ti/total*100).toFixed(0)+"%":"–";$("consShare").textContent=total?(tc/total*100).toFixed(0)+"%":"–";$("propShare").textContent=total?(tp/total*100).toFixed(0)+"%":"–";
+ const s=$("status");
+ if(Math.abs(gap)<=10){s.textContent="✓ 必要額に近づきました";s.className="status ok"}
+ else if(gap<0){s.textContent=`財源不足 ${Math.abs(gap).toFixed(1)}万円`;s.className="status"}
+ else{s.textContent=`必要額を ${gap.toFixed(1)}万円 上回っています`;s.className="status"}
+}
+function resetAll(){$("low").value=3;$("mid").value=6;$("high").value=12;$("consumption").value=3;$("property").value=.2;calc();window.scrollTo({top:0,behavior:"smooth"})}
+calc();
+</script>
+</body></html>
