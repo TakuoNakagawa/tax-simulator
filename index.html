@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>公平な税制をつくれ！ v3</title>
+<title>公平な税制をつくれ！ v4</title>
 <style>
 :root{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif;color:#172033;background:#f4f6fa}
 *{box-sizing:border-box}body{margin:0}header{background:white;border-bottom:1px solid #dce2eb;padding:17px 20px;position:sticky;top:0;z-index:5}
@@ -26,7 +26,7 @@ button{border:0;border-radius:9px;padding:10px 14px;font-weight:750;cursor:point
 <main>
 <section class="card">
 <div class="mission"><div><div class="small">MISSION</div><div class="target">公共サービスに必要なお金：<span id="targetText">350</span>万円</div></div><div id="status" class="status"></div></div>
-<p>今の税率では財源が不足しています。必要なお金を確保しながら、6人の違いを見て「公平だ」と説明できる税制をつくってください。</p>
+<p>あなたたちが、この国の税制をゼロからつくります。公共サービスに必要な350万円を集めるには、「誰に」「何を基準に」「どのくらい」負担してもらいますか？</p>
 <div class="callout"><b>大切：</b>このアプリは「公平度」を判定しません。数字を見て、何を公平と考えたのかを班で説明してください。</div>
 </section>
 
@@ -37,16 +37,35 @@ button{border:0;border-radius:9px;padding:10px 14px;font-weight:750;cursor:point
 <h2>① 所得への課税 ― 超過累進方式</h2>
 <p class="small">高い税率は、境目を超えた所得の部分だけにかかります。3つを同じ税率にすれば比例的な課税にもできます。</p>
 <div class="controls">
-<div class="control"><label>400万円までの部分 <span class="value"><span id="lowV">3</span>%</span></label><input id="low" type="range" min="0" max="20" value="3"></div>
-<div class="control"><label>400万円超〜800万円の部分 <span class="value"><span id="midV">6</span>%</span></label><input id="mid" type="range" min="0" max="30" value="6"></div>
-<div class="control"><label>800万円を超える部分 <span class="value"><span id="highV">12</span>%</span></label><input id="high" type="range" min="0" max="45" value="12"></div>
+<div class="control"><label>400万円までの部分 <span class="value"><span id="lowV">0</span>%</span></label><input id="low" type="range" min="0" max="20" value="0"></div>
+<div class="control"><label>400万円超〜800万円の部分 <span class="value"><span id="midV">0</span>%</span></label><input id="mid" type="range" min="0" max="30" value="0"></div>
+<div class="control"><label>800万円を超える部分 <span class="value"><span id="highV">0</span>%</span></label><input id="high" type="range" min="0" max="45" value="0"></div>
 </div></section>
 
 <section class="card"><h2>② 消費への課税</h2>
-<div class="control"><label>年間消費額への税率 <span class="value"><span id="consumptionV">3</span>%</span></label><input id="consumption" type="range" min="0" max="20" value="3"><div class="small">このモデルでは、表示された「年間消費額」を税抜きの消費額として計算します。</div></div></section>
+<div class="control"><label>年間消費額への税率 <span class="value"><span id="consumptionV">0</span>%</span></label><input id="consumption" type="range" min="0" max="20" value="0"><div class="small">このモデルでは、表示された「年間消費額」を税抜きの消費額として計算します。</div></div></section>
 
 <section class="card"><h2>③ 土地・建物への課税</h2>
-<div class="control"><label>土地・建物の評価額への税率 <span class="value"><span id="propertyV">0.2</span>%</span></label><input id="property" type="range" min="0" max="3" step=".1" value=".2"><div class="small">固定資産への課税を考えるための学習用モデルです。預金・株式・相続財産などへの課税はここでは扱いません。</div></div></section>
+<div class="control"><label>土地・建物の評価額への税率 <span class="value"><span id="propertyV">0</span>%</span></label><input id="property" type="range" min="0" max="3" step=".1" value="0"><div class="small">固定資産への課税を考えるための学習用モデルです。預金・株式・相続財産などへの課税はここでは扱いません。</div></div></section>
+
+<section class="card">
+<details>
+<summary style="cursor:pointer;font-weight:800;font-size:17px">参考：実際の日本の主な税率を見る</summary>
+<div style="margin-top:14px">
+<p class="small">※活動では、まず自分たちで税制を考えてみましょう。以下は2026年10月時点の日本の制度を比べるための参考です。</p>
+<table>
+<thead><tr><th style="text-align:left">税</th><th style="text-align:left">日本の主な税率</th><th style="text-align:left">ポイント</th></tr></thead>
+<tbody>
+<tr><td style="text-align:left"><b>所得税</b></td><td style="text-align:left">5％・10％・20％・23％・33％・40％・45％</td><td style="text-align:left">課税所得に応じた7段階の超過累進税率</td></tr>
+<tr><td style="text-align:left"><b>個人住民税</b></td><td style="text-align:left">所得割は原則10％</td><td style="text-align:left">都道府県民税と市区町村民税を合わせた基本的な割合</td></tr>
+<tr><td style="text-align:left"><b>消費税</b></td><td style="text-align:left">標準10％／軽減8％</td><td style="text-align:left">消費者が負担する間接税</td></tr>
+<tr><td style="text-align:left"><b>固定資産税</b></td><td style="text-align:left">標準税率1.4％</td><td style="text-align:left">土地・家屋などの固定資産に対する地方税</td></tr>
+</tbody>
+</table>
+<p class="warn">このシミュレーションは日本の税制を再現したものではありません。所得控除・税額控除・非課税制度・軽減税率・固定資産の評価方法などを省略した学習用モデルです。また、アプリの所得区分（400万円・800万円）は学習用に単純化しており、日本の実際の所得税区分とは異なります。</p>
+</div>
+</details>
+</section>
 
 <section class="card"><h2>税制の結果</h2>
 <div class="summary">
@@ -100,7 +119,7 @@ function calc(){
  else if(gap<0){s.textContent=`財源不足 ${Math.abs(gap).toFixed(1)}万円`;s.className="status"}
  else{s.textContent=`必要額を ${gap.toFixed(1)}万円 上回っています`;s.className="status"}
 }
-function resetAll(){$("low").value=3;$("mid").value=6;$("high").value=12;$("consumption").value=3;$("property").value=.2;calc();window.scrollTo({top:0,behavior:"smooth"})}
+function resetAll(){$("low").value=0;$("mid").value=0;$("high").value=0;$("consumption").value=0;$("property").value=0;calc();window.scrollTo({top:0,behavior:"smooth"})}
 calc();
 </script>
 </body></html>
