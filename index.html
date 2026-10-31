@@ -20,6 +20,15 @@ button{border:0;border-radius:9px;padding:10px 14px;font-weight:750;cursor:point
 @media(max-width:560px){.people,.controls{grid-template-columns:1fr}}
 @media print{header{position:static}input,button,textarea{display:none}.card{break-inside:avoid;box-shadow:none}}
 </style>
+
+<style>
+.voice-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.voice{border:1px solid #d7dce3;border-radius:14px;padding:14px;background:#fff}
+.voice h3{margin:0 0 8px;font-size:17px}
+.voice p{margin:0;line-height:1.65}
+.voice .tag{display:inline-block;font-size:12px;border:1px solid #c9ced6;border-radius:999px;padding:2px 8px;margin-bottom:8px}
+</style>
+
 </head>
 <body>
 <header><h1>公平な税制をつくれ！</h1><div class="sub">「所得・消費・土地や建物」のどこに、どれくらい課税する？</div></header>
@@ -84,6 +93,15 @@ button{border:0;border-radius:9px;padding:10px 14px;font-weight:750;cursor:point
 <p class="question">⑤ より公平にしようとすると、今の3種類の税だけでは足りない仕組みはありますか？</p><textarea placeholder="家族構成、生活に必要なお金、控除などにも注目してみよう。"></textarea>
 <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px"><button class="primary" onclick="window.print()">印刷 / PDF保存</button><button class="secondary" onclick="resetAll()">初期状態に戻す</button></div>
 </section>
+
+<section class="card" id="voicesCard">
+  <h2>住民の声を聞いてみよう</h2>
+  <p>必要な財源を集めることができても、それだけで「公平」とは限りません。今つくった税制を、6人はどう見るでしょうか。</p>
+  <button type="button" id="voiceBtn" onclick="showVoices()">住民の声を聞く</button>
+  <div id="voices" style="display:none;margin-top:16px"></div>
+  <p class="small" style="margin-top:12px">※6人はそれぞれ自分の立場から意見を述べています。アプリが税制の「公平・不公平」を判定しているわけではありません。</p>
+</section>
+
 </main>
 <script>
 const people=[
@@ -122,4 +140,62 @@ function calc(){
 function resetAll(){$("low").value=0;$("mid").value=0;$("high").value=0;$("consumption").value=0;$("property").value=0;calc();window.scrollTo({top:0,behavior:"smooth"})}
 calc();
 </script>
+
+<script>
+function residentVoiceData(){
+  const low = Number(document.getElementById("low")?.value || 0);
+  const mid = Number(document.getElementById("mid")?.value || 0);
+  const high = Number(document.getElementById("high")?.value || 0);
+  const cons = Number(document.getElementById("consumption")?.value || 0);
+  const prop = Number(document.getElementById("property")?.value || 0);
+
+  let A;
+  if(cons >= 15) A = "私は所得の多くを生活のための消費に使います。消費への税率がかなり高いと、日々の生活への負担を強く感じるな。";
+  else if(cons >= 8) A = "消費への税金は、買い物をするたびに負担します。所得の多くを生活費に使う私には、この税率は小さくないな。";
+  else if(cons === 0) A = "消費には税金をかけないんだね。生活のための買い物への負担は増えないけれど、その分のお金はどこから集めるのかな。";
+  else A = "私は所得の多くを生活費として使います。消費への税金が上がると、所得に占める負担も気になるな。";
+
+  let B = "Fさんと本人の年収と土地・建物の評価額は同じ。でも私は子どもが2人いる。家族構成が違っても同じように負担するのが公平なのかな。";
+  let F = "Bさんと本人の年収と土地・建物の評価額は同じ。条件が同じ部分には同じように課税する、という考え方もありそうだね。";
+
+  let D;
+  if(high >= 35) D = "所得が多い部分にはかなり高い税率が設定されているね。負担する力に応じる考え方は分かるけれど、どこまで差をつけるのが公平なんだろう。";
+  else if(low === mid && mid === high) D = "所得が200万円の人も1200万円の私も、所得に対する税率は同じなんだね。同じ割合にすることには、どんな考え方があるんだろう。";
+  else if(high > mid && mid >= low) D = "所得が増えるほど高い税率になるようにしたんだね。所得の多い人により多く負担してもらう考え方なんだな。";
+  else if(high < low) D = "所得の高い部分より、低い部分の税率の方が高いんだね。なぜこの形にしたのか聞いてみたいな。";
+  else D = "私の所得は6人の中で最も多い。所得の額と税負担を、どのように結びつけて考えたんだろう。";
+
+  let E;
+  if(prop >= 2) E = "土地や建物への税率が高いね。私は高額な土地・建物を持っているけれど、年収は300万円。財産を持つことと、今すぐ税金を払える力は同じなのかな。";
+  else if(prop === 0) E = "私は高額な土地・建物を持っているけれど、そこには税金をかけないんだね。所得だけで負担する力を判断してよいのかな。";
+  else E = "私は年収は300万円だけれど、高額な土地・建物を持っている。所得と財産のどちらを重く見るのが公平なんだろう。";
+
+  let C;
+  const spread = Math.max(low,mid,high) - Math.min(low,mid,high);
+  if(spread >= 20) C = "所得の段階によって税率にかなり差があるね。どのくらいの差なら、みんなが納得できる制度になるんだろう。";
+  else if(cons >= 10 && prop >= 1) C = "所得だけでなく、消費や土地・建物にも広く負担を求める税制なんだね。負担を分けることにはどんな良さがあるのかな。";
+  else C = "所得・消費・土地や建物のうち、どれを重視するかで負担の形がずいぶん変わるね。なぜこの組み合わせにしたのか知りたいな。";
+
+  return [
+    ["Aさん","年収200万円・生活費の割合が大きい",A],
+    ["Bさん","年収400万円・子ども2人",B],
+    ["Cさん","年収700万円",C],
+    ["Dさん","年収1200万円",D],
+    ["Eさん","年収300万円・高額な土地や建物を所有",E],
+    ["Fさん","年収400万円・単身",F]
+  ];
+}
+
+function showVoices(){
+  const box = document.getElementById("voices");
+  const voices = residentVoiceData();
+  box.innerHTML = '<div class="voice-grid">' + voices.map(v =>
+    '<div class="voice"><h3>'+v[0]+'</h3><div class="tag">'+v[1]+'</div><p>「'+v[2]+'」</p></div>'
+  ).join('') + '</div>';
+  box.style.display = "block";
+  const btn = document.getElementById("voiceBtn");
+  if(btn) btn.textContent = "今の税率で、もう一度住民の声を聞く";
+}
+</script>
+
 </body></html>
