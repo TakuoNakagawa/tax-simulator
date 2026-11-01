@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>公平な税制をつくれ！ v4</title>
+<title>公平な税制をつくれ！ v8 音声版</title>
 <style>
 :root{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif;color:#172033;background:#f4f6fa}
 *{box-sizing:border-box}body{margin:0}header{background:white;border-bottom:1px solid #dce2eb;padding:17px 20px;position:sticky;top:0;z-index:5}
@@ -29,6 +29,13 @@ button{border:0;border-radius:9px;padding:10px 14px;font-weight:750;cursor:point
 .voice .tag{display:inline-block;font-size:12px;border:1px solid #c9ced6;border-radius:999px;padding:2px 8px;margin-bottom:8px}
 </style>
 
+
+<style>
+.voice-actions{display:flex;gap:8px;align-items:center;margin-top:12px;flex-wrap:wrap}
+.speak-btn,.stop-speech-btn{border:1px solid #c9ced6;border-radius:10px;padding:8px 11px;background:#fff;cursor:pointer;font-weight:700}
+.speak-btn:hover,.stop-speech-btn:hover{background:#f3f5f7}
+.voice.speaking{outline:3px solid rgba(0,0,0,.12)}
+</style>
 </head>
 <body>
 <header><h1>公平な税制をつくれ！</h1><div class="sub">「所得・消費・土地や建物」のどこに、どれくらい課税する？</div></header>
@@ -204,13 +211,58 @@ function residentVoiceData(){
 function showVoices(){
   const box = document.getElementById("voices");
   const voices = residentVoiceData();
-  box.innerHTML = '<div class="voice-grid">' + voices.map(v =>
-    '<div class="voice"><h3>'+v[0]+'</h3><div class="tag">'+v[1]+'</div><p>「'+v[2]+'」</p></div>'
+  box.innerHTML = '<div class="voice-grid">' + voices.map((v,i) =>
+    '<div class="voice" id="voice-card-'+i+'"><h3>'+v[0]+'</h3><div class="tag">'+v[1]+'</div><p>「'+v[2]+'」</p><div class="voice-actions"><button type="button" class="speak-btn" onclick="speakResident('+i+')">▶ 声を聞く</button></div></div>'
   ).join('') + '</div>';
+  box.innerHTML += '<div class="voice-actions" style="margin-top:14px"><button type="button" class="stop-speech-btn" onclick="stopResidentSpeech()">■ 読み上げを停止</button></div>';
   box.style.display = "block";
   const btn = document.getElementById("voiceBtn");
   if(btn) btn.textContent = "今の税率で、もう一度住民の声を聞く";
 }
+
+let currentSpeechCard = null;
+function chooseJapaneseVoice(){
+  const vs = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
+  return vs.find(v => /^ja-JP$/i.test(v.lang)) || vs.find(v => /^ja/i.test(v.lang)) || null;
+}
+function clearSpeakingCard(){
+  document.querySelectorAll(".voice.speaking").forEach(el => el.classList.remove("speaking"));
+  currentSpeechCard = null;
+}
+function stopResidentSpeech(){
+  if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+  clearSpeakingCard();
+}
+function speakResident(index){
+  if (!("speechSynthesis" in window)) {
+    alert("このブラウザでは音声読み上げ機能を利用できません。");
+    return;
+  }
+  window.speechSynthesis.cancel();
+  clearSpeakingCard();
+  const data = residentVoiceData();
+  const resident = data[index];
+  if (!resident) return;
+  const u = new SpeechSynthesisUtterance(resident[0] + "。 " + resident[2]);
+  u.lang = "ja-JP";
+  u.rate = 0.92;
+  u.pitch = 1.0;
+  u.volume = 1.0;
+  const voice = chooseJapaneseVoice();
+  if (voice) u.voice = voice;
+  const card = document.getElementById("voice-card-" + index);
+  if (card) { card.classList.add("speaking"); currentSpeechCard = card; }
+  u.onend = clearSpeakingCard;
+  u.onerror = clearSpeakingCard;
+  window.speechSynthesis.speak(u);
+}
+if ("speechSynthesis" in window) {
+  window.speechSynthesis.getVoices();
+  if ("onvoiceschanged" in window.speechSynthesis) {
+    window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+  }
+}
+
 </script>
 
 </body></html>
